@@ -23,7 +23,7 @@ pnpm dlx @prisma/cli@latest app deploy
 
 ## Agent Skill Installation
 
-`@prisma/cli` can install and refresh Prisma skills for local AI coding agents:
+`@prisma/cli` can install and refresh Prisma skills for local coding tools:
 
 ```bash
 bunx @prisma/cli@latest agent install

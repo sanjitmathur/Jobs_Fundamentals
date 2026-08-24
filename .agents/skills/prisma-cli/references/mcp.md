@@ -1,6 +1,6 @@
 # prisma mcp
 
-Starts Prisma's MCP server for AI development tools.
+Starts Prisma's MCP (Model Context Protocol) server.
 
 ## Command
 
@@ -11,8 +11,8 @@ prisma mcp
 ## What It Does
 
 - Starts a Model Context Protocol (MCP) server for your Prisma project
-- Exposes Prisma schema and database context to compatible AI tools
-- Helps AI assistants understand models, generate queries, and suggest migrations
+- Exposes Prisma schema and database context to compatible tools
+- Helps connected tools understand models, generate queries, and suggest migrations
 
 ## Usage
 
@@ -23,8 +23,8 @@ prisma mcp
 ## Typical Use Cases
 
 - Connect Prisma to ChatGPT, Claude, or other MCP-aware tools
-- Give an AI assistant access to your Prisma schema structure
-- Help an agent propose queries, schema updates, and migration steps with project context
+- Give a connected tool access to your Prisma schema structure
+- Help propose queries, schema updates, and migration steps with project context
 
 ## Notes
 
@@ -36,4 +36,4 @@ prisma mcp
 ## References
 
 - [Prisma CLI `mcp` command](https://docs.prisma.io/docs/cli/mcp)
-- [Prisma MCP Server](https://www.prisma.io/docs/ai/tools/chatgpt)
+- [Prisma MCP Server](https://www.prisma.io/docs/tools/mcp)

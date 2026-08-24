@@ -47,7 +47,7 @@ Reference this skill when:
 | Development | `dev` | Local Prisma Postgres for development |
 | Database | `db pull`, `db push`, `db seed`, `db execute` | Direct database operations |
 | Migrations | `migrate dev`, `migrate deploy`, `migrate reset`, `migrate status`, `migrate diff`, `migrate resolve` | Schema migrations |
-| Utility | `complete`, `studio`, `mcp`, `version`, `debug` | Shell, development, and AI tooling |
+| Utility | `complete`, `studio`, `mcp`, `version`, `debug` | Shell, development, and tooling |
 
 ## Quick Reference
 
@@ -165,7 +165,7 @@ prisma migrate diff --from-config-datasource --to-schema schema.prisma --script
 # Open Prisma Studio (database GUI)
 prisma studio
 
-# Start Prisma's MCP server for AI tools
+# Start Prisma's MCP server
 prisma mcp
 
 # Show version info
@@ -185,13 +185,13 @@ prisma format
 prisma complete zsh
 ```
 
-## AI Safety Checkpoint
+## Safety Checkpoint
 
-Prisma blocks destructive commands when it detects an AI agent until the agent has obtained explicit user consent. This covers `migrate reset`, `db push --force-reset`, and `db push --accept-data-loss`.
+Prisma blocks destructive commands until the user has given explicit consent. This covers `migrate reset`, `db push --force-reset`, and `db push --accept-data-loss`.
 
 - Explain the exact data-loss impact and ask for consent immediately before running the command.
 - Do not infer consent from earlier or unrelated messages.
-- If automation needs the consent variable, set `PRISMA_USER_CONSENT_FOR_DANGEROUS_AI_ACTION` to the user's exact consent message. Do not invent the text.
+- If automation needs the consent variable, set `PRISMA_USER_CONSENT_FOR_DANGEROUS_ACTION` to the user's exact consent message. Do not invent the text.
 - The Prisma MCP server deliberately has no `migrate-reset` tool.
 
 Read `references/agent-safety.md` before any destructive Prisma command.
@@ -254,7 +254,7 @@ references/migrate-diff.md   - Schema diffing
 references/studio.md         - Database GUI
 references/mcp.md            - Prisma MCP server
 references/complete.md       - Shell completion generation
-references/agent-safety.md   - AI consent checkpoint for destructive commands
+references/agent-safety.md   - Consent checkpoint for destructive commands
 references/validate.md       - Schema validation
 references/format.md         - Schema formatting
 references/debug.md          - Debug info
