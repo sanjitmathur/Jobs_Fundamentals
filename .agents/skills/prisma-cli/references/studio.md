@@ -93,7 +93,7 @@ Recent Prisma Studio releases added richer editor workflows:
 - back-relation navigation
 - SQL workflows including raw SQL queries
 
-Some recent builds also expose AI-assisted SQL authoring. Treat these as interactive Studio features rather than a replacement for checked-in migrations or application queries.
+Some recent builds also expose assisted SQL authoring. Treat these as interactive Studio features rather than a replacement for checked-in migrations or application queries.
 
 ## Use Cases
 

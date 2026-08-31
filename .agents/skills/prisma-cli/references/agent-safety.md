@@ -1,6 +1,6 @@
-# AI safety checkpoint for destructive commands
+# Safety checkpoint for destructive commands
 
-Prisma detects common AI-agent environments and blocks these commands until the user gives explicit consent:
+Prisma blocks these commands until the user gives explicit consent:
 
 - `prisma migrate reset`
 - `prisma db push --force-reset`
@@ -15,7 +15,7 @@ Prisma detects common AI-agent environments and blocks these commands until the 
 For an agent-run subprocess, Prisma accepts the exact consent text through:
 
 ```bash
-PRISMA_USER_CONSENT_FOR_DANGEROUS_AI_ACTION='<exact user consent message>' prisma migrate reset --force
+PRISMA_USER_CONSENT_FOR_DANGEROUS_ACTION='<exact user consent message>' prisma migrate reset --force
 ```
 
 The value must match the user's message exactly and must not contain added quotes or newlines. Never fabricate consent, reuse an old unrelated approval, or bypass the checkpoint by hiding agent-detection environment variables.

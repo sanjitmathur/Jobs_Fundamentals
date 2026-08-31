@@ -3,7 +3,7 @@ import * as TaskService from '../services/task.service';
 
 export const create = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const task = await TaskService.createTask(req.body);
+    const task = await TaskService.createTask(req.body, req.user!.userId);
     res.status(201).json(task);
   } catch (error) {
     next(error);
@@ -41,7 +41,12 @@ export const getOne = async (req: Request, res: Response, next: NextFunction) =>
 
 export const update = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const task = await TaskService.updateTask(req.params.id as string, req.body);
+    const task = await TaskService.updateTask(
+      req.params.id as string,
+      req.body,
+      req.user!.userId,
+      req.user!.role
+    );
     res.status(200).json(task);
   } catch (error) {
     next(error);
@@ -51,8 +56,22 @@ export const update = async (req: Request, res: Response, next: NextFunction) =>
 export const updateStatus = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { status } = req.body as { status: string };
-    const task = await TaskService.updateTaskStatus(req.params.id as string, status as any);
+    const task = await TaskService.updateTaskStatus(
+      req.params.id as string,
+      status as any,
+      req.user!.userId,
+      req.user!.role
+    );
     res.status(200).json(task);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const remove = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    await TaskService.deleteTask(req.params.id as string);
+    res.status(204).send();
   } catch (error) {
     next(error);
   }
@@ -64,4 +83,5 @@ export const TaskController = {
   getOne,
   update,
   updateStatus,
+  remove,
 };
