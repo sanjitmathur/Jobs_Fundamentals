@@ -70,7 +70,11 @@ export const updateStatus = async (req: Request, res: Response, next: NextFuncti
 
 export const remove = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await TaskService.deleteTask(req.params.id as string);
+    await TaskService.deleteTask(
+      req.params.id as string,
+      req.user!.userId,
+      req.user!.role
+    );
     res.status(204).send();
   } catch (error) {
     next(error);

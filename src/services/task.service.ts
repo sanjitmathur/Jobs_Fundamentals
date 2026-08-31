@@ -57,11 +57,19 @@ export async function updateTaskStatus(
   return prisma.task.update({ where: { id }, data: { status } });
 }
 
-export async function deleteTask(id: string) {
+export async function deleteTask(
+  id: string,
+  requesterId: string,
+  requesterRole: Role
+) {
   const task = await prisma.task.findUnique({ where: { id } });
 
   if (!task) {
     throw new AppError('Task not found', 404);
+  }
+
+  if (requesterRole !== Role.ADMIN && task.userId !== requesterId) {
+    throw new AppError('You do not have permission to delete this task', 403);
   }
 
   await prisma.task.delete({ where: { id } });
