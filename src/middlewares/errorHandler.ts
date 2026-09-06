@@ -5,9 +5,11 @@ export const errorHandler = (
   err: Error,
   _req: Request,
   res: Response,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  next: NextFunction
+  _next: NextFunction
 ) => {
+  if (res.headersSent) {
+    return _next(err);
+  }
   if (err instanceof AppError) {
     res.status(err.statusCode).json({
       success: false,
@@ -16,14 +18,24 @@ export const errorHandler = (
     return;
   }
 
+  if (err.name === 'MulterError') {
+    res.status(400).json({
+      success: false,
+      message: err.message,
+    });
+    return;
+  }
+
   console.error(err.stack);
+  const errObj = err as unknown as Record<string, unknown>;
+  const causeObj = errObj.cause as { message?: string } | undefined;
   res.status(500).json({
     success: false,
     message: 'Internal Server Error',
     error: err.message,
-    cause: (err as any).cause?.message,
-    code: (err as any).code,
-    meta: (err as any).meta,
+    cause: causeObj?.message,
+    code: errObj.code,
+    meta: errObj.meta,
   });
 };
 

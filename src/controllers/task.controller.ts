@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { TaskStatus } from '@prisma/client';
 import * as TaskService from '../services/task.service';
 
 export const create = async (req: Request, res: Response, next: NextFunction) => {
@@ -58,7 +59,7 @@ export const updateStatus = async (req: Request, res: Response, next: NextFuncti
     const { status } = req.body as { status: string };
     const task = await TaskService.updateTaskStatus(
       req.params.id as string,
-      status as any,
+      status as TaskStatus,
       req.user!.userId,
       req.user!.role
     );
