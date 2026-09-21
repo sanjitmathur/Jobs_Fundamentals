@@ -1,6 +1,7 @@
 import { Prisma, TaskStatus, Role } from '@prisma/client';
 import { prisma } from '../utils/db';
 import { AppError } from '../utils/AppError';
+import { getStorageProvider } from '../storage';
 
 export async function createTask(
   data: { title: string; description?: string; status?: TaskStatus },
@@ -62,7 +63,10 @@ export async function deleteTask(
   requesterId: string,
   requesterRole: Role
 ) {
-  const task = await prisma.task.findUnique({ where: { id } });
+  const task = await prisma.task.findUnique({
+    where: { id },
+    include: { files: true },
+  });
 
   if (!task) {
     throw new AppError('Task not found', 404);
@@ -73,6 +77,17 @@ export async function deleteTask(
   }
 
   await prisma.task.delete({ where: { id } });
+
+  if (task.files && Array.isArray(task.files) && task.files.length > 0) {
+    const storage = getStorageProvider();
+    for (const file of task.files) {
+      try {
+        await storage.deleteFile(file.storageKey);
+      } catch (err) {
+        console.error(`Failed to delete physical file ${file.storageKey} from storage:`, err);
+      }
+    }
+  }
 }
 
 export async function getTasks(options: { status?: string; page?: number; limit?: number }) {
@@ -85,9 +100,6 @@ export async function getTasks(options: { status?: string; page?: number; limit?
   if (options.status && Object.values(TaskStatus).includes(options.status as TaskStatus)) {
     where.status = options.status as TaskStatus;
   }
-
-  console.log('GET_TASKS_WHERE', JSON.stringify(where, null, 2));
-  console.log('GET_TASKS_PAGE_LIMIT_SKIP', { page, limit, skip });
 
   const tasks = await prisma.task.findMany({
     where,
