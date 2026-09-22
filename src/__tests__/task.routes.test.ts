@@ -10,6 +10,8 @@ jest.mock('../utils/db', () => ({
     task: {
       findUnique: jest.fn(),
       delete: jest.fn(),
+      findMany: jest.fn(),
+      count: jest.fn(),
     },
   },
 }));
@@ -82,5 +84,27 @@ describe('DELETE /api/tasks/:id route authorization', () => {
 
     expect(res.status).toBe(204);
     expect(prisma.task.delete).toHaveBeenCalledWith({ where: { id: 'task-123' } });
+  });
+});
+
+describe('GET /api/tasks route scoping', () => {
+  it('should filter tasks by userId for regular users', async () => {
+    (prisma.task.findMany as jest.Mock).mockResolvedValue([] as never);
+    (prisma.task.count as jest.Mock).mockResolvedValue(0 as never);
+
+    const userToken = generateToken('user-123', Role.USER);
+
+    const res = await request(app)
+      .get('/api/tasks')
+      .set('Authorization', `Bearer ${userToken}`);
+
+    expect(res.status).toBe(200);
+    expect(prisma.task.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          userId: 'user-123',
+        }),
+      })
+    );
   });
 });

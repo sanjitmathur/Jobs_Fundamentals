@@ -1,13 +1,21 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const task_controller_1 = require("../controllers/task.controller");
 const validate_1 = require("../middlewares/validate");
+const authenticate_1 = require("../middlewares/authenticate");
 const task_schema_1 = require("../schemas/task.schema");
+const file_routes_1 = __importDefault(require("./file.routes"));
 const router = (0, express_1.Router)();
+router.use(authenticate_1.authenticate);
 router.post('/', (0, validate_1.validate)(task_schema_1.createTaskSchema), task_controller_1.TaskController.create);
 router.get('/', task_controller_1.TaskController.list);
 router.get('/:id', task_controller_1.TaskController.getOne);
 router.patch('/:id', (0, validate_1.validate)(task_schema_1.updateTaskSchema), task_controller_1.TaskController.update);
 router.patch('/:id/status', (0, validate_1.validate)(task_schema_1.updateTaskStatusSchema), task_controller_1.TaskController.updateStatus);
+router.delete('/:id', task_controller_1.TaskController.remove);
+router.use('/:id/files', file_routes_1.default);
 exports.default = router;

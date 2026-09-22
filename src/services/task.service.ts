@@ -90,12 +90,21 @@ export async function deleteTask(
   }
 }
 
-export async function getTasks(options: { status?: string; page?: number; limit?: number }) {
+export async function getTasks(options: {
+  status?: string;
+  page?: number;
+  limit?: number;
+  userId?: string;
+}) {
   const page = options.page && options.page > 0 ? options.page : 1;
   const limit = options.limit && options.limit > 0 ? options.limit : 10;
   const skip = (page - 1) * limit;
 
   const where: Prisma.TaskWhereInput = {};
+
+  if (options.userId) {
+    where.userId = options.userId;
+  }
 
   if (options.status && Object.values(TaskStatus).includes(options.status as TaskStatus)) {
     where.status = options.status as TaskStatus;
@@ -105,6 +114,7 @@ export async function getTasks(options: { status?: string; page?: number; limit?
     where,
     skip,
     take: limit,
+    orderBy: { createdAt: 'desc' },
   });
 
   const total = await prisma.task.count({ where });

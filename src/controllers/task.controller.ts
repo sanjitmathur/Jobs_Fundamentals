@@ -13,12 +13,21 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
 
 export const list = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { status, page, limit } = req.query as { status?: string; page?: string; limit?: string };
+    const { status, page, limit, all } = req.query as {
+      status?: string;
+      page?: string;
+      limit?: string;
+      all?: string;
+    };
+
+    const isUserAdmin = req.user?.role === 'ADMIN';
+    const shouldFetchAll = isUserAdmin && all === 'true';
 
     const tasks = await TaskService.getTasks({
       status: status,
       page: page ? parseInt(page) : undefined,
       limit: limit ? parseInt(limit) : undefined,
+      userId: shouldFetchAll ? undefined : req.user!.userId,
     });
 
     res.status(200).json(tasks);
@@ -34,6 +43,12 @@ export const getOne = async (req: Request, res: Response, next: NextFunction) =>
       res.status(404).json({ message: 'Task not found' });
       return;
     }
+
+    if (req.user!.role !== 'ADMIN' && task.userId !== req.user!.userId) {
+      res.status(403).json({ message: 'You do not have permission to view this task' });
+      return;
+    }
+
     res.status(200).json(task);
   } catch (error) {
     next(error);
